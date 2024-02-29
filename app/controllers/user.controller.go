@@ -1,0 +1,29 @@
+package controllers
+
+import (
+	"EasyGin/app/services"
+	"encoding/json"
+	"fmt"
+	"github.com/gin-gonic/gin"
+)
+
+type UserController struct {
+}
+
+func (u UserController) GetUser(ctx *gin.Context) {
+	user := services.UsersService{}.GetUser(ctx, "12345")
+	if user == nil {
+		ctx.JSON(500, gin.H{
+			"message": "is not user",
+		})
+	} else {
+		jsonData, err := json.Marshal(user)
+		if err != nil {
+			fmt.Println("Error marshalling JSON:", err)
+		}
+		ctx.JSON(200, gin.H{
+			"message": fmt.Sprintf("%s", jsonData),
+		})
+	}
+
+}

@@ -1,0 +1,20 @@
+{
+  "name": "auth",
+  "port": 3000,
+  "database": {
+    "host": "dev.wxserver.vip",
+    "user": "postgres",
+    "password": "yT7qANWVkKfrKCDe86Lmse5cgYDH3RpC",
+    "dbname": "auth",
+    "port": 5432,
+    "sslmode": "disable"
+  },
+  "redis_common": {
+    "poolSize": 10,
+    "MinIdleConns": 1,
+    "port": 6379,
+    "host": "dev.wxserver.vip",
+    "password": "sNH3exTChyKT",
+    "db":0
+  }
+}
