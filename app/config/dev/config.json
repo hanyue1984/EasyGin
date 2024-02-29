@@ -2,10 +2,10 @@
   "name": "auth",
   "port": 3000,
   "database": {
-    "host": "dev.wxserver.vip",
+    "host": "127.0.0.1",
     "user": "postgres",
-    "password": "yT7qANWVkKfrKCDe86Lmse5cgYDH3RpC",
-    "dbname": "auth",
+    "password": "123456",
+    "dbname": "test",
     "port": 5432,
     "sslmode": "disable"
   },
@@ -13,8 +13,8 @@
     "poolSize": 10,
     "MinIdleConns": 1,
     "port": 6379,
-    "host": "dev.wxserver.vip",
-    "password": "sNH3exTChyKT",
+    "host": "127.0.0.1",
+    "password": "text",
     "db":0
   }
 }
