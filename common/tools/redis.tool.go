@@ -2,6 +2,7 @@ package tools
 
 import (
 	Config "EasyGin/app/config"
+	"context"
 	"encoding/json"
 	"fmt"
 	"github.com/gin-gonic/gin"
@@ -9,23 +10,30 @@ import (
 	"time"
 )
 
-var redisClients = make(map[string]RedisClient)
+var redisClients = make(map[string]*RedisClient)
 
 type RedisClient struct {
-	client *redis.Client
+	Client *redis.Client
 	key    string
+	pub    *redis.IntCmd //发布
+	sub    *redis.PubSub //订阅
 }
 
-var config *Config.Config
+// 发布跟监听数据类型
+type listenData struct {
+	key  string
+	cmd  string
+	data interface{}
+}
+type publishMsg func(*redis.Message)
 
 // Connect 创建连接,如果已经创建过那么直接获取连接
-func (r RedisClient) Connect(key string, config Config.Redis) RedisClient {
-	client, exists := redisClients[key]
-	if exists {
-		return client
+func (r RedisClient) Connect(key string, config Config.Redis) *RedisClient {
+	if redisClients[key] != nil {
+		return redisClients[key]
 	} else {
-		redisClients[key] = RedisClient{
-			client: redis.NewClient(&redis.Options{
+		redisClients[key] = &RedisClient{
+			Client: redis.NewClient(&redis.Options{
 				Addr:         fmt.Sprintf("%s:%d", config.Host, config.Port),
 				Password:     config.Password,
 				DB:           config.Db,
@@ -43,14 +51,14 @@ func (r RedisClient) Set(ctx *gin.Context, key, value any, expiration time.Durat
 	if err != nil {
 		fmt.Println("Error encoding JSON:", err)
 	}
-	err = r.client.Set(ctx, fmt.Sprintf("%s:%s", r.key, key), jsonData, expiration).Err()
+	err = r.Client.Set(ctx, fmt.Sprintf("%s:%s", r.key, key), jsonData, expiration).Err()
 	if err != nil {
 		fmt.Println("Error Redis Set:", err)
 	}
 }
 
 func (r RedisClient) Get(ctx *gin.Context, key, object interface{}) interface{} {
-	jsonStr, err := r.client.Get(ctx, fmt.Sprintf("%s:%s", r.key, key)).Result()
+	jsonStr, err := r.Client.Get(ctx, fmt.Sprintf("%s:%s", r.key, key)).Result()
 	if err != nil {
 		fmt.Println("Error:", err)
 		return nil
@@ -63,4 +71,28 @@ func (r RedisClient) Get(ctx *gin.Context, key, object interface{}) interface{} 
 		return nil
 	}
 	return object
+}
+
+// Subscribe 订阅
+func (r RedisClient) Subscribe(channels string, funcMsg publishMsg) {
+	r.sub = r.Client.Subscribe(context.Background(), channels)
+	// 接收订阅的消息
+	ch := r.sub.Channel()
+	// 启动一个 goroutine 来处理接收到的消息
+	go func() {
+		for msg := range ch {
+			funcMsg(msg)
+		}
+	}()
+}
+
+// Publish 发布
+func (r RedisClient) Publish(channels string, message listenData) {
+	// 将结构体转换为 JSON 字符串
+	jsonData, err := json.Marshal(message)
+	if err != nil {
+		fmt.Println("Error marshalling JSON:", err)
+		return
+	}
+	r.pub = r.Client.Publish(context.Background(), channels, jsonData)
 }
