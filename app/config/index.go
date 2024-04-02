@@ -11,10 +11,11 @@ import (
 
 // Config 基础配置定义
 type Config struct {
-	Name        string   `json:"name"`
-	Port        int      `json:"port"`
-	Database    Database `json:"database"`
-	RedisCommon Redis    `json:"redis_common"`
+	Name                  string   `json:"name"`
+	Port                  int      `json:"port"`
+	GatewayIdentification string   `json:"gatewayIdentification"`
+	Database              Database `json:"database"`
+	RedisCommon           Redis    `json:"redis_common"`
 }
 
 // Database 数据库定义
@@ -53,7 +54,12 @@ func LoadConfig(env string) *Config {
 		fmt.Println("Error opening config file:", err)
 		return nil
 	}
-	defer file.Close()
+	defer func(file *os.File) {
+		err := file.Close()
+		if err != nil {
+
+		}
+	}(file)
 	decoder := json.NewDecoder(file)
 	var config Config
 	// 解码 JSON 文件

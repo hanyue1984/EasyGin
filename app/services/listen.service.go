@@ -12,8 +12,7 @@ type ListenService struct {
 
 func (listen ListenService) Listen() {
 	UsersRedis := tools.RedisClient{}.Connect("User", Config.AppConfig.RedisCommon)
-	UsersRedis.Subscribe("user_channel", func(message *redis.Message) {
+	UsersRedis.Subscribe("users_modules", func(message *redis.Message) {
 		fmt.Sprintln(message)
 	})
-	fmt.Printf("变量 UsersRedis 的指针地址为：%p\n", &UsersRedis.Client)
 }

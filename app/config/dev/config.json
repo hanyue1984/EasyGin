@@ -1,11 +1,13 @@
 {
-  "name": "auth",
+  "name": "项目名称",
   "port": 3000,
+  "appid": "应用ID",
+  "gatewayIdentification":"网关验证码",
   "database": {
-    "host": "127.0.0.1",
-    "user": "postgres",
-    "password": "123456",
-    "dbname": "test",
+    "host": "数据库地址",
+    "user": "数据库用户名",
+    "password": "数据库密码",
+    "dbname": "数据库名称",
     "port": 5432,
     "sslmode": "disable"
   },
@@ -13,8 +15,8 @@
     "poolSize": 10,
     "MinIdleConns": 1,
     "port": 6379,
-    "host": "127.0.0.1",
-    "password": "text",
+    "host": "redis地址",
+    "password": "redis密码",
     "db":0
   }
 }

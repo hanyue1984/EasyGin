@@ -9,6 +9,9 @@ import (
 func SetupApiRouter(name string, engine *gin.Engine) {
 	router := engine.Group(fmt.Sprintf("/%s/api", name))
 	{
-		router.GET("/v1/get", controllers.UserController{}.GetUser)
+		var UserController controllers.UserController
+		router.GET("/v1/get", UserController.GetUser)
+		router.POST("/v1/login", UserController.Login)
+		router.POST("/v1/register", UserController.Register)
 	}
 }

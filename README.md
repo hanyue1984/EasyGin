@@ -5,17 +5,20 @@
 
 1.Go基础 [教程地址](https://www.topgoer.com/go基础/)
 
-2.Gin [教程地址](https://www.topgoer.com/gin框架/简介.html)
+2.Gin [教程地址](https://www.topgoer.com/gin框架/简介.html) 
 
-3.GORM [教程地址](https://www.topgoer.com/数据库操作/gorm/gorm介绍.html)
+3.GORM [教程地址](https://www.topgoer.com/数据库操作/gorm/gorm介绍.html) 
 
 工具简单封装了Redis
 使用用例
 ```
 //声明一个工具包中的redis客户端
 var UsersRedis tools.RedisClient
-//连接配置包中的要用的redis服务器配置
+
+//连接配置包中的要用的redis服务器配置该接口就算调用多次也只会连接一个类似单例这里指的是User如果你换个名字还会创建一个连接
 UsersRedis.Connect("User", Config.AppConfig.RedisCommon)
+
+//获取数据并且转化成结构体
 result := UsersRedis.Get(ctx, key, models.Users{})
 ```
 ## 目录说明
