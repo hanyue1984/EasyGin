@@ -9,6 +9,12 @@
 
 3.GORM [教程地址](https://www.topgoer.com/数据库操作/gorm/gorm介绍.html) 
 
+4.搭配后台 [下载地址](https://gitee.com/icecoldmoon/easyGinAdmin.git) 
+
+搭建好后需要用后台创建一个管理员，然后修改数据库中的user表把admin设置为true roles设置成{root}这样就拥有了最高权限能得到所有的后台界面
+
+后台中有初始化的数据主要数据是menu跟menu_mate表中的数据否则看不到菜单
+
 工具简单封装了Redis
 使用用例
 ```
